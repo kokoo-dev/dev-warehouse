@@ -4,8 +4,8 @@ HttpServletRequestWrapper 클래스를 상속받아 HttpServletRequest를 복사
 <br/><br/><br/>
 
 
-1.HttpServletRequestWrapper 상속 (ModifyRequest 클래스)
-
+1.HttpServletRequestWrapper 상속
+> ex) ModifyRequest.java
 ~~~java
 public class ModifyRequest extends HttpServletRequestWrapper { // HttpServletRequestWrapper 상속
 
@@ -20,6 +20,7 @@ public class ModifyRequest extends HttpServletRequestWrapper { // HttpServletReq
 <br/><br/><br/>
 
 2.ModifyRequest 사용
+> ex) MyFilter.java
 ~~~java
 public class MyFilter implements Filter {
       @Override
