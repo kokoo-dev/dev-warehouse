@@ -6,15 +6,35 @@ HttpServletRequestWrapper 클래스를 상속받아 HttpServletRequest를 복사
 
 1.HttpServletRequestWrapper 상속 (ModifyRequest 클래스)
 
+~~~java
+public class ModifyRequest extends HttpServletRequestWrapper { // HttpServletRequestWrapper 상속
 
-> <img src="./img/img_20210512_1.png">
+      public ModifyRequest(HttpServletRequest request) {
+            super(request); // 부모 클래스 생성자 호출
+      }
+      
+      //TODO 메소드 추가
+}
+~~~
 
-위 사진에서 <span style="color:red"> ① </span> 과 같이 상속 후,
-<span style="color:red"> ② </span> 처럼 생성자에서 부모 클래스의 생성자를 호출하면 된다.
 <br/><br/><br/>
 
 2.ModifyRequest 사용
-> <img src="./img/img_20210512_2.png">
+~~~java
+public class MyFilter implements Filter {
+      @Override
+      public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+            if(request instanceof HttpServletRequest){
+                  ModifyRequest modifyRequest = new ModifyRequest((HttpServletRequest) request);
+                  modifyRequest.setParameter("name","value");
+                  
+                  chain.doFilter(modifyRequest, response);
+            } else {
+                  chain.doFilter(request, response);
+            }
+      }
+}
+~~~
 <br/><br/><br/>
 
 참고 사이트 : https://sunghs.tistory.com/64
