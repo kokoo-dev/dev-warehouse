@@ -3,6 +3,11 @@ MongoDB가 설치 과정은 생략하고 SpringBoot에서 설정 후 <br/>
 MongoTemplate, MongoRepository 두 가지 방법을 통해 사용하는 간략한 방법을 설명하겠습니다.
 <br/><br/>
 
+#### 버전 정보
+ - SpringBoot: 2.5.0
+ - MongoDB: 4.4.6
+<br/><br/>
+
 ### 예제 DB 초기 상태
 <img src="./img/20210522_1.png"/> <br/>
 persons 이름의 Documents에 2개의 값이 들어있는 상태
