@@ -84,6 +84,23 @@ public class PersonService {
         return mongoTemplate.insert(personDoc);
     }
 
+    public UpdateResult updatePerson(PersonDoc personDoc){
+        Query query = new Query();
+        Update update = new Update();
+
+        query.addCriteria(Criteria.where("_id").is(personDoc.get_id()));
+        update.set("age", personDoc.getAge());
+
+        return mongoTemplate.updateMulti(query, update, "persons");
+    }
+
+    public DeleteResult deletePerson(PersonDoc personDoc){
+        Query query = new Query();
+        query.addCriteria(Criteria.where("name").is(personDoc.getName()));
+
+        return mongoTemplate.remove(query, "persons");
+    }
+
     public PersonDoc getPersonByRepo(String _id){
         return personRepository.findById(_id).orElseThrow(() -> new RestClientException(HttpStatus.NOT_FOUND.toString()));
     }
@@ -94,6 +111,14 @@ public class PersonService {
 
     public PersonDoc insertPersonByRepo(PersonDoc personDoc){
         return personRepository.insert(personDoc);
+    }
+
+    public PersonDoc updatePersonByRepo(PersonDoc personDoc){
+        return personRepository.save(personDoc);
+    }
+
+    public void deletePersonByRepo(PersonDoc personDoc){
+        personRepository.deleteByName(personDoc.getName());
     }
 }
 ~~~
@@ -112,9 +137,9 @@ public class PersonTests {
 
     @Test
     public void testSelectPerson(){
-        String _id = "60a74970f114367ba856b175";
+        String _id = "60a74978f114367ba856b176";
         PersonDoc personDoc = personService.getPerson(_id);
-        assertEquals("HongKilDong", personDoc.getName());
+        assertEquals("HongGilDong", personDoc.getName());
     }
 
     @Test
@@ -135,17 +160,39 @@ public class PersonTests {
     public void testInsertPerson(){
         PersonDoc personDoc = new PersonDoc();
         personDoc.setAge(21);
-        personDoc.setName("KangKilDong");
+        personDoc.setName("KangGilDong");
 
         PersonDoc result = personService.insertPerson(personDoc);
         logger.info("result :: " + result.get_id() + " " + result.getName() + " " + result.getAge());
     }
 
     @Test
+    public void testUpdatePerson(){
+        String _id = "60a74978f114367ba856b176";
+        PersonDoc personDoc = personService.getPerson(_id);
+        personDoc.setAge(personDoc.getAge() + 1);
+
+        UpdateResult updateResult = personService.updatePerson(personDoc);
+
+        logger.info("result:: " + updateResult.getModifiedCount());
+    }
+
+    @Test
+    public void testDeletePerson(){
+        String name = "KangGilDong";
+        PersonDoc personDoc = new PersonDoc();
+        personDoc.setName(name);
+
+        DeleteResult deleteResult = personService.deletePerson(personDoc);
+
+        logger.info("result:: " + deleteResult.getDeletedCount());
+    }
+
+    @Test
     public void testSelectPersonByRepo(){
-        String _id = "60a74970f114367ba856b175";
+        String _id = "60a74978f114367ba856b176";
         PersonDoc personDoc = personService.getPersonByRepo(_id);
-        assertEquals("HongKilDong", personDoc.getName());
+        assertEquals("HongGilDong", personDoc.getName());
     }
 
     @Test
@@ -166,14 +213,34 @@ public class PersonTests {
     public void testInsertPersonByRepo(){
         PersonDoc personDoc = new PersonDoc();
         personDoc.setAge(22);
-        personDoc.setName("LimKilDong");
+        personDoc.setName("LimGilDong");
 
-        PersonDoc result = personService.insertPerson(personDoc);
+        PersonDoc result = personService.insertPersonByRepo(personDoc);
         logger.info("result :: " + result.get_id() + " " + result.getName() + " " + result.getAge());
+    }
+
+    @Test
+    public void testUpdatePersonByRepo(){
+        String _id = "60a74978f114367ba856b176";
+        PersonDoc personDoc = personService.getPerson(_id);
+        personDoc.setAge(personDoc.getAge() + 1);
+
+        PersonDoc result = personService.updatePersonByRepo(personDoc);
+
+        logger.info("result :: " + result.getAge());
+    }
+
+    @Test
+    public void testDeletePersonByRepo(){
+        String name = "KangGilDong";
+        PersonDoc personDoc = new PersonDoc();
+        personDoc.setName(name);
+
+        personService.deletePersonByRepo(personDoc);
     }
 }
 ~~~
-위 테스트 코드를 정상적으로 값을 select, insert 하는 것을 확인할 수 있습니다.
+위 테스트 코드를 통해 CRUD를 확인해 볼 수 있습니다.
 <br/>
 
 Repository와 Service를 보다시피 JPA와 굉장히 유사하기에 <br/>
