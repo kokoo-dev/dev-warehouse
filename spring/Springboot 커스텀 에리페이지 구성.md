@@ -16,7 +16,7 @@ public class CustomErrorController implements ErrorController {
         model.addAttribute("status", status);
         model.addAttribute("reason", reason);
 
-        return "admin_web/error";
+        return "/error"; //error.html
     }
 }
 ~~~
