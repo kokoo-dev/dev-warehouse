@@ -3,7 +3,7 @@ B-Tree 스캔만으로 원하는 데이터를 가져오기에, 불필요한 데�
 <br/>
 
 가장 많이 사용된 예시로 limit를 이용한 페이징 쿼리를 사용하겠습니다. (데이터 100만건) <br/>
-
+</s>
 테스트용 테이블
 ~~~sql
 CREATE TABLE IF NOT EXISTS `board` (
@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS `board` (
   PRIMARY KEY (`board_no`)
 ) ENGINE=InnoDB AUTO_INCREMENT=344094 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 ~~~
-
+<s>
 실행계획 및 쿼리 실행 시간을 통해 차이점을 확인할 수 있고, 데이터양이 더 많아지면 차이는 더 날 것입니다.
 
 > 일반 쿼리
