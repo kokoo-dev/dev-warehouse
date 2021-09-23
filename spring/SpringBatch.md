@@ -77,3 +77,45 @@ public class JobConfig {
 ~~~
 (1) 데이터를 저장할 때 분할크기 <br/>
 (2) 데이터를 처리하는 구간으로 reader, writer와 달리 생략이 가능합니다. <br/><br/>
+
+QueueItemReader, CustomItemProcessor, CustomItemWriter 는 각각 ItemReader, ItemProcessor, ItemWriter를 상속받아 구현한 클래스입니다. <br/><br/>
+> ex) QueueItemReader.java
+~~~java
+public class QueueItemReader<T> implements ItemReader<T> {
+    private Queue<T> queue;
+
+    public QueueItemReader(List<T> data){
+        this.queue = new LinkedList<>(data);
+    }
+
+    @Override
+    public T read() throws Exception, UnexpectedInputException, ParseException, NonTransientResourceException {
+        return queue.poll();
+    }
+}
+~~~
+<br/><br/>
+
+> ex) CustomItemProcessor.java
+~~~java
+public class CustomItemProcessor implements ItemProcessor<InputData, OutputData> {
+
+    @Override
+    public OutputData process(InputData inputData) {
+	// InputData -> OutputData 로 데이터 처리
+
+	return new OutputData();
+    }
+    
+}
+~~~
+<br/><br/>
+> ex) CustomItemWriter.java
+~~~java
+public class CustomItemWriter implements ItemWriter<OutputData> {
+    @Override
+    public void write(List<? extends ReviewDTO> reviewList) throws Exception {
+    	//ㄴㄴㄴㅇ 
+    }
+}
+~~~
