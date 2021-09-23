@@ -114,8 +114,8 @@ public class CustomItemProcessor implements ItemProcessor<InputData, OutputData>
 ~~~java
 public class CustomItemWriter implements ItemWriter<OutputData> {
     @Override
-    public void write(List<? extends ReviewDTO> reviewList) throws Exception {
-    	//ㄴㄴㄴㅇ 
+    public void write(List<? extends OutputData> outputDataList) throws Exception {
+    	//데이터 저장 처리
     }
 }
 ~~~
