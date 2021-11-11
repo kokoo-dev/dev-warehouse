@@ -35,3 +35,35 @@ function testHandlebars(){
 
 
  2.2. 반복데이터
+ > ex) test.html
+~~~html
+<!-- 생략 -->
+<body>
+    <div id="draw">
+        <script id="test_form" type="text/x-handlebars-template">
+            {{#dataItem}}  <!-- (1) -->
+            <div>{{data1}}</div>
+            {{/dataItem}}
+        </sciprt>
+    </div>
+</body>
+<!-- 생략 -->
+~~~
+> ex) test.js
+~~~js
+function testHandlebars(){
+    var template = Handlebars.compile($('#test_form').html());
+    var dataList = [];
+    
+    $(반복데이터).each(function(){
+        dataList.push({
+            'data1': 'testData' //(2)
+        });
+    });
+    
+    $('#draw').html(template({'dataItem' : dataList})); //(3)
+}
+~~~
+
+반복할 노드를 (1) 처럼 감싸준 후 이름을 부여한 뒤 (2) 와 같이 배열에 데이터 이름을 맞춰서 넣어줍니다. <br/>
+(3)에서 처럼 (1)에 지정한 이름으로 데이터를 지정해주면 해당 노드가 배열의 길이만큼 생성됩니다.
