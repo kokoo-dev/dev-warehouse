@@ -74,3 +74,22 @@ public class RedisConfig {
     }
 }
 ~~~
+
+
+4. 데이터 get/set
+~~~java
+public class RedisTest{
+    private final RedisTemplate<String, Object> redisTemplate;
+    
+    
+    public Object getData(String key){
+        ValueOperations<String, Object> valueOperations = redisTemplate.opsForValue();
+        return valueOperations.get(key);
+    }
+
+    public void setData(String key, Object value){
+        ValueOperations<String, Object> valueOperations = redisTemplate.opsForValue();
+        valueOperations.set(key, value);
+    }
+}
+~~~
