@@ -4,8 +4,28 @@ Secrets Manager는 코드상에서 직접 관리하는것이 아닌 원격지에
 
 
 1. AWS Secrets Manager 생성
-
-
+<br><br>
+ 1.1. 암호 생성 및 요금표
+ <img src="/img/20220118_1.png" width="800px">
+ - Secrets Managers 검색 후 접속하여 (1)새 보안 암호 저장 클릭하여 생성화면으로 넘어갑니다. <br>
+    (2)를 보니 생각보다 요금이 저렴한편으로 보입니다.
+<br><br>
+ 1.2. 보안암호유형 선택
+ <img src="/img/20220118_2.png" width="800px">
+ - 어플리케이션에서 사용할것이기에 (1)다른 유형의 보안암호 선택 후 (2)사용할 키/값 입력. (키/값은 이후에 추가가 가능합니다.)
+<br><br>
+ 1.3. 보안암호이름 입력
+ <img src="/img/20220118_3.png" width="800px">
+ - prefix는 기본적으로 /secret이며 그 뒤로 사용할 이름을 작성해줍니다.
+<br><br>
+ 1.4. 로컬에서 사용하기 위한 IAM생성
+  <img src="/img/20220118_4.png" width="800px">
+ - (1) 이름 설정 및 (2) 프로그래밍 방식 선택
+<br><br>
+ 1.5. IAM 정책설정<br>
+  <img src="/img/20220118_5.png" width="800px">
+ - (1)을 선택 후 SecretsMangerReadWrite 정책 추가. 이 후 나오는 accesskey, secretkey는 저장해둡니다.
+ 
 2. awscli 설치 및 설정 (Mac)
 
 
