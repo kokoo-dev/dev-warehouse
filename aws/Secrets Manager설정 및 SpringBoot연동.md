@@ -25,8 +25,19 @@ Secrets Manager는 코드상에서 직접 관리하는것이 아닌 원격지에
  1.5. IAM 정책설정<br>
   <img src="/img/20220118_5.png" width="800px">
  - (1)을 선택 후 SecretsMangerReadWrite 정책 추가. 이 후 나오는 accesskey, secretkey는 저장해둡니다.
- 
+ <br><br>
 2. awscli 설치 및 설정 (Mac)
+
+~~~sh
+brew install awscli //설치
+aws --version //설치 및 버전확인
+aws configure //configure 설정
+AWS Access Key ID [None] : {access key}
+AWS Secret Access Key [None] : {secret key}
+Default region name [None] : {리전 ex)ap-northeast-2}
+Default output format [None] : json
+~~~
+ - IAM 키값들과 사용하는 리전, 포맷 정보를 입력해줍니다.
 
 
 3. Spring Boot 설정 및 테스트
