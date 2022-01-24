@@ -3,8 +3,7 @@ Secrets Manager는 코드상에서 직접 관리하는것이 아닌 원격지에
 물론 다른 방법이 있지만 사내에서 대부분의 서비스를 AWS로 이용하기에 Secrets Manager를 사용하게 되었고 이에 대한 설정방법을 공유하고자 합니다.<br>
 
 
-1. AWS Secrets Manager 생성
-<br><br>
+<h4>1. AWS Secrets Manager 생성</h4>
  1.1. 암호 생성 및 요금표
  <img src="/img/20220118_1.png" width="800px">
  - Secrets Managers 검색 후 접속하여 (1)새 보안 암호 저장 클릭하여 생성화면으로 넘어갑니다. <br>
@@ -26,7 +25,7 @@ Secrets Manager는 코드상에서 직접 관리하는것이 아닌 원격지에
   <img src="/img/20220118_5.png" width="800px">
  - (1)을 선택 후 SecretsMangerReadWrite 정책 추가. 이 후 나오는 accesskey, secretkey는 저장해둡니다.
  <br><br>
-2. awscli 설치 및 설정 (Mac)
+<h4>2. awscli 설치 및 설정 (Mac)</h4>
 
 ~~~sh
 brew install awscli //설치
@@ -40,4 +39,40 @@ Default output format [None] : json
  - IAM 키값들과 사용하는 리전, 포맷 정보를 입력해줍니다.
 
 
-3. Spring Boot 설정 및 테스트
+<h4>3. Spring Boot 설정 및 테스트</h4>
+ 3.1. bootstrap.yml
+ 
+ ~~~yml
+ aws:
+  secretsmanager:
+    name: test-local
+ cloud:
+  aws:
+   region:
+    static: ap-northeast-2 #사용하는 리전
+ ~~~
+- bootstrap.yml은 resources 바로 밑에 위치하며, application.yml처럼 이름 뒤에 -local, -release와 같이 -Dspring.profiles.active 옵션에 따라 다른 파일을 적용할 수 있습니다.<br>
+ aws.secretsmanager.name의 값은 위 1.3에서 지정한 보안 암호 이름의 prefix를 제외한 값입니다.
+ <br><br>
+ 
+ 3.2. yml에서 사용예
+ 
+ > ex) application.yml
+ ~~~yml
+ example:
+  test:
+   value: ${connection.test}
+ ~~~
+ 
+ - ${} 안에 1.2에서 지정해준 키값을 넣어주면됩니다.
+ 
+ 3.3. java에서 사용예
+ 
+ > ex) Test.java
+ ~~~java
+ public class Test {
+   @Value("${connection.test}")
+   private String connectionTest;
+ }
+ ~~~
+ - 어플리케이션 내 설정값을 불러오는 것과 같이 @Value어노테이션을 이용해 가져올 수 있습니다.
