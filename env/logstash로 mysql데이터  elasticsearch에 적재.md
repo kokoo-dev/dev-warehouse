@@ -1,5 +1,17 @@
 logstash로 외부 mysql에 있는 데이터를 같은 서버의 ElasticSearch로 옮길 수 있게 설정하는 방법입니다. <br>
 
+임시 테이블 구조
+~~~sql
+CREATE TABLE IF NOT EXISTS `shop` (
+  `shop_no` int NOT NULL AUTO_INCREMENT,
+  `shop_name` varchar(50) NOT NULL,
+  `del_yn` varchar(1) NOT NULL,
+  `reg_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `upd_date` datetime NOT NULL,
+  PRIMARY KEY (`shop_no`)
+)
+~~~
+
 1. mysql connector 설치
 ~~~sh
 sudo yum install -y mysql-connector-java
@@ -52,3 +64,11 @@ sudo /usr/share/logstash/bin/logstash -f /home/ec2-user/mysql.conf
 서비스로 등록했다면 서비스를 실행해줍니다. <br>
 
 이 후 curl -X GET 'localhost:9200/shop/_search' 로 확인해봅니다.
+
+ <br> <br>
+ 
+ ++ 주기적으로 중복되지 않는 데이터만 동기화하는 방법입니다.<br>
+<a href="https://www.elastic.co/kr/blog/how-to-keep-elasticsearch-synchronized-with-a-relational-database-using-logstash">여기</a>에 설명이 잘되어있어 참고하였습니다.<br>
+
+<br>
+
