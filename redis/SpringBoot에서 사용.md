@@ -8,7 +8,7 @@ implementation "org.springframework.session:spring-session-data-redis"
 2. yml설정 파일에 redis host, port 추가
 ~~~yml
 redis:
-  host: {REDIS_HOST}
+  host: 127.0.0.1
   port: 6379
 ~~~
 
@@ -74,7 +74,46 @@ public class RedisConfig {
     }
 }
 ~~~
+위 방식의 jedis는 lettuce에 비해 성능이 좋지 않기에 사용을 잘 안하는 추세라고 합니다. <br>
+jedis lettuce로 검색하면 비교 글이 많이 있습니다. <br>
+아래는 lettuce로 설정하는 방식이며 connection pool 등 설정도 일부분 사라져 코드가 더 진 것을 볼 수 있습니다.
+~~~java
+@Configuration
+public class RedisConfig {
+    @Value("${redis.host}")
+    private String host;
 
+    @Value("${redis.port}")
+    private int port;
+
+    @Bean
+    public RedisConnectionFactory redisConnectionFactory() {
+        RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();
+        redisStandaloneConfiguration.setHostName(host);
+        redisStandaloneConfiguration.setPort(port);
+
+        LettuceConnectionFactory lettuceConnectionFactory = new LettuceConnectionFactory(redisStandaloneConfiguration);
+        return lettuceConnectionFactory;
+    }
+
+    @Bean
+    public RedisTemplate redisTemplate(){
+        final RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
+        redisTemplate.setConnectionFactory(redisConnectionFactory());
+        redisTemplate.setKeySerializer(new StringRedisSerializer());
+        redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer());
+        redisTemplate.setHashKeySerializer(new StringRedisSerializer());
+        redisTemplate.setHashValueSerializer(new GenericJackson2JsonRedisSerializer());
+
+        return redisTemplate;
+    }
+
+    @Bean
+    public ConfigureRedisAction configureRedisAction() {
+        return ConfigureRedisAction.NO_OP;
+    }
+}
+~~~
 
 4. 데이터 get/set
 ~~~java
