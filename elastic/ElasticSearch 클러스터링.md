@@ -68,3 +68,12 @@ Master node를 Data node랑 같이 사용하다가 Master only로 변경할 경�
 ~~~sh
 /usr/share/elasticsearch/bin/elasticsearch-node repurpose
 ~~~
+
+또는 Master 노드와 Data 노드에 있는 데이터가 달라서 클러스터링되지 못할 수가 있습니다. <br>
+이 경우에는 데이터가 저장된 디렉토리를 통째로 지워줍니다. <br>
+
+~~~sh
+sudo rm -rf /var/lib/elasticsearch/nodes
+~~~
+
+이 후 Master 노드에 데이터를 넣어서 Data 노드에 적재되는지 확인해봅니다.
