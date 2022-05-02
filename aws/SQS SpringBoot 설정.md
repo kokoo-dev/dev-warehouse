@@ -126,7 +126,7 @@ public class AwsSqsConfig {
 
 ~~~java
 @Getter
-@Setter
+@Builder
 public class Message {
     private String message;
     private long createTimestamp;
