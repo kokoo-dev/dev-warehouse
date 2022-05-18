@@ -19,7 +19,7 @@ FIFO 유형의 경우 대기열 이름의 끝은 .fifo 로 끝나야 합니다.
 
 <br>
 
-AmazonSQSFullAccess 의 권한을 프로그래밍 방식으로 엑세스 할 수 있게 IAM 권한을 설정해줍니다. <br>
+AmazonSQSFullAccess 의 권한을 프로그래밍 방식으로 엑세스 할 수 있게 IAM 권한을 설정해줍니다. <br><br>
 
 <h3>2. Spring Boot 설정</h3>
 <h4>2.1. dependency 추가</h4>
@@ -175,7 +175,7 @@ public class SqsService {
 }
 ~~~
 
-(1): Sender 샘플 메소드<.br>
+(1): Sender 샘플 메소드 <br>
 (2): 메시지 중복 제거를 위한 설정으로 AWS 콘솔에서 메시지 큐 생성 시 콘텐츠 기반 중복 제거 설정으로 대체 가능 <br>
 (3): Listener 샘플 메소드로 deletionPolicy (메시지 삭제 정책) 지정<br>
 
