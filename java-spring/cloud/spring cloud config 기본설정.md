@@ -80,6 +80,23 @@ management:
 (1): repository 의 git 주소 <br>
 (2): config 서버의 port <br>
 (3): application 의 서버 재시작 없이 설정 값을 refresh 하기 위한 설정<br>
+<br>
+
+<h4> 2.3. config 서버 어노테이션 추가 </h4>
+
+> ex) XXXApplication.java
+
+~~~java
+@EnableConfigServer
+@SpringBootApplication
+public class XXXApplication {
+	public static void main(String[] args) {
+		SpringApplication.run(XXXApplication.class, args);
+	}
+}
+~~~
+
+<br>
 
 서버 시작 후 http://localhost:8888/config/local 을 접속해보면 정상 조회된 결과를 볼 수 있습니다. <br>
 http://localhost:8888/{applicationName}/{profiles} 형태 <br>
