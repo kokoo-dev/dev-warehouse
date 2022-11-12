@@ -28,17 +28,12 @@ spring:
 (4): 보낼 메세지<br>
 
 Mail 의 경우 status-changed.html 을 템플릿으로 사용하여 그대로 메세지를 보낼 수 있었는데, Slack 의 경우 메세지를 직접 작성해주어야 합니다. <br>
-SpEL 표기법을 지원하며 상세 메세지의 경우 Map 타입의 계층 적인 구조를 가지기에 위 설정 중 spring.boot.admin.notify.slack.message 의 3번쨰 줄 처럼 직접 파싱처리 해줍니다. <br>
+SpEL 표기법을 지원하며 상세 메세지의 경우 Map 타입의 계층 적인 구조를 가지기에 위 설정 중 spring.boot.admin.notify.slack.message 의 3번째 줄 처럼 직접 파싱처리 해줍니다. <br><br>
 
 > ex) MessageParser.java
 
 ~~~java
 public class MessageParser {
-
-    private static final String DETAIL_SEPARATOR = ": ";
-    private static final String ASTERISK = "*";
-    private static final String ENTER = "\n";
-    private static final String TAB = "\t";
 
     public static String parse(Map<String, Object> detail) {
         StringBuffer message = new StringBuffer();
