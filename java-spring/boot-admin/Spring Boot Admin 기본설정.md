@@ -33,7 +33,7 @@ spring:
   boot:
     admin:
       ui:
-        public-url: # 
+        public-url: # 사용할 도메인 추가
 ~~~
 
 <br>
