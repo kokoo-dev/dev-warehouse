@@ -28,6 +28,12 @@ Spring Boot 버전은 2.7.4 입니다.
 ~~~yml
 server:
   port: 8085
+  
+spring:
+  boot:
+    admin:
+      ui:
+        public-url: # 
 ~~~
 
 <br>
