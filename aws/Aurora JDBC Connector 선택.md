@@ -1,6 +1,8 @@
 AWS Aurora 의 경우 1개의 Writer 인스턴스와 0~15개의 Reader 인스턴스로 구성하여 부하를 분산 시킬 수 있고, 뛰어난 Failover 성능을 보여주는 장점이 있습니다. <br>
 Spring 에서 JDBC 를 선택할 때 위 두가지 장점을 살릴 수 있는 것은 무엇인지 **MySQL vs MariaDB vs AWS** JDBC Driver 이 세가지를 비교해보겠습니다. <br>
+
 <h3>특이사항</h3>
+
 - MariaDB JDBC
   - Major 버전업에 따른 AWS Aurora 미지원 (2.x -> 3.x)
     - 따라서 비교도 2.x 와 3.x 로 나눠서 진행
@@ -12,6 +14,7 @@ Spring 에서 JDBC 를 선택할 때 위 두가지 장점을 살릴 수 있는 �
     - github 에 read-write splitting 관련 issue 와 branch 가 있는 것으로 볼 때 추후 버전에 지원 할 것으로 기대
 
 <h3>Test Version</h3>
+
 - Spring Boot: 2.7.x
 - MySQL JDBC: 8.0.31
 - MariaDB JDBC v2.x: 2.7.5
@@ -37,6 +40,7 @@ Spring 에서 JDBC 를 선택할 때 위 두가지 장점을 살릴 수 있는 �
   - MariaDB v2.x 나 AWS 의 경우 내부 장애조치 덕분에 올바른 인스턴스로 연결해 곧바로 정상적인 read/write 가능
 
 <h3>결과</h3>
+
 앞서 목표로 삼은 AWS Aurora 의 Read/Write 의 접속 분리, Failover 시 HA 구성 조건을 만족하는 Driver 는 MariaDB JDBC v2.x, AWS MySQL JDBC 2개 <br>
 아래와 같은 이유로 **AWS MySQL JDBC** 사용
 - MariaDB JDBC 의 메이저 버전 업데이트에서 Aurora 지원 중단
