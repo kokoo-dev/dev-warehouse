@@ -46,4 +46,147 @@ Spring 에서 JDBC 를 선택할 때 위 두가지 장점을 살릴 수 있는 �
 - MariaDB JDBC 의 메이저 버전 업데이트에서 Aurora 지원 중단
 - <a href="https://aws.amazon.com/ko/blogs/database/using-the-mariadb-jdbc-driver-with-amazon-aurora-with-mysql-compatibility/">AWS Database 공식 블로그</a>에서 AWS JDBC 사용 권장
   - <img src="/img/aws-database-blog.png" width="400px">
+  
+<h3>Spring 에서 Read/Write 분리 수동 설정 예시</h3>
+
+> ex) build.gradle
+
+~~~gradle
+dependencies {
+    implementation 'software.aws.rds:aws-mysql-jdbc:1.1.2'
+}
+~~~
+- <a href="https://github.com/awslabs/aws-mysql-jdbc#as-a-gradle-dependency">https://github.com/awslabs/aws-mysql-jdbc#as-a-gradle-dependency</a>
+
+<br>
+
+> ex) application.yml
+
+~~~yml
+mysql:
+  driver-class-name: software.aws.rds.jdbc.mysql.Driver
+  username: {id}
+  password: {password}
+  write:
+    name: write
+    url: jdbc:mysql:aws://{Write Cluster Endpoint}
+  read:
+    name: read
+    url: jdbc:mysql:aws://{Read Cluster Endpoint}
+~~~
+
+- write/read 의 url 분리
+- url 은 jdbc:mysql:aws:// 로 설정 (aws 빼먹을 경우 일반 MySQL JDBC 로 사용됨)
+- 반드시 Instance Endpoint 가 아닌 Cluster Endpoint 사용
+
+<br>
+
+> ex) ReplicationDataSourceProperties.java
+
+~~~java
+@Getter
+@Setter
+@Configuration
+@ConfigurationProperties(prefix = "mysql")
+public class ReplicationDataSourceProperties {
     
+    private String driverClassName;
+    private String username;
+    private String password;
+    private Write write;
+    private Read read;
+    
+    @Getter
+    @Setter
+    public static class Write {
+        private String name;
+        private String url;
+    }
+    
+    @Getter
+    @Setter
+    public static class Read {
+        private String name;
+        private String url;
+    }
+}
+~~~
+
+- application.yml 의 mysql 설정을 바인딩
+
+<br>
+
+> ex) ReplicationRoutingDataSource.java
+
+~~~java
+@Builder
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+public class ReplicationRoutingDataSource extends AbstractRoutingDataSource {
+    
+    private String writeLookUpKey;
+    private String readLookUpKey;
+
+    @Override
+    public void setTargetDataSources(Map<Object, Object> targetDataSources) {
+        super.setTargetDataSources(targetDataSources);
+    }
+    
+    @Override
+    public Object determineCurrentLookupKey() {
+        return TransactionSynchronizationManager.isCurrentTransactionReadOnly() ? readLookUpKey : writeLookUpKey;
+    }
+}
+~~~
+
+- AbstractRoutingDataSource 를 상속받아 Transaction 의 ReadOnly 여부에 따라 다른 DataSource 를 사용하도록 구현
+
+<br>
+
+> ex) ReplicationRoutingDataSource.java
+
+~~~java
+@Configuration
+@RequiredArgsConstructor
+public class ReplicationDataSourceConfig {
+    
+    private final ReplicationDataSourceProperties replicationDataSourceProperties;
+    
+    @Bean
+    public DataSource routingDataSource() {
+        Write write = replicationDataSourceProperties.getWrite();
+        Read read = replicationDataSourceProperties.getRead();
+        
+        DataSource writeDataSource = createDataSource(write.getUrl());
+        DataSource readDataSource = createDataSource(read.getUrl());
+        
+        Map<Object, Object> dataSourceMap = new HashMap<>();
+        dataSourceMap.put(write.getName(), writeDataSource);
+        dataSourceMap.put(read.getName(), readDataSource);
+        
+        ReplicationRoutingDataSource replicationRoutingDataSource = ReplicationRoutingDataSource.builder()
+            .writeLookUpKey(write.getName())
+            .readLookUpKey(read.getName())
+            .build();
+        replicationRoutingDataSource.setDefaultTargetDataSource(writeDataSource); // (1)
+        replicationRoutingDataSource.setTargetDataSources(dataSourceMap);
+        replicationRoutingDataSource.afterPropertiesSet();
+        
+        return new LazyConnectionDataSourceProxy(replicationRoutingDataSource);
+    }
+    
+    private DataSource createDataSource(String url) {
+        HikariDataSource hikariDataSource = new HikariDataSource();
+        hikariDataSource.setDriverClassName(replicationDataSourceProperties.getDriverClassName());
+        hikariDataSource.setJdbcUrl(url);
+        hikariDataSource.setUsername(replicationDataSourceProperties.getUsername);
+        hikariDataSource.setPassword(replicationDataSourceProperties.getPassword);
+        // (2)
+        return hikariDataSource;
+    }
+}
+~~~
+
+- (1): Primary 인 Write Cluster 가 Default DataSource 가 되도록 설정
+- (2): Timeout 이나 Connection Pool Size 등 추가 설정
+
+@Transactional(readOnly=true|false) 설정만 해주면 DataSource 분기 처리가 됩니다.
