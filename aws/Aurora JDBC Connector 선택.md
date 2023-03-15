@@ -42,7 +42,14 @@ Spring 에서 JDBC 를 선택할 때 위 두가지 장점을 살릴 수 있는 �
 <h3>결과</h3>
 
 앞서 목표로 삼은 AWS Aurora 의 Read/Write 의 접속 분리, Failover 시 HA 구성 조건을 만족하는 Driver 는 MariaDB JDBC v2.x, AWS MySQL JDBC 2개 <br>
-아래와 같은 이유로 **AWS MySQL JDBC** 사용
+~~아래와 같은 이유로 **AWS MySQL JDBC** 사용~~ <br>
+
+> 2023.03.15 수정
+
+수정날짜(2023.03.15) 기준 최신 버전 (1.1.4) 기준으로 확인했을 때 Read Cluster 에 Connection 만 맺어지고, <br>
+실제 쿼리는 Write Cluster 로 보내지는 것을 확인. <br>
+라이브러리 내에서 왜 connection url 이 변경 되는 것인지 확인 필요 <br>
+
 - MariaDB JDBC 의 메이저 버전 업데이트에서 Aurora 지원 중단
 - <a href="https://aws.amazon.com/ko/blogs/database/using-the-mariadb-jdbc-driver-with-amazon-aurora-with-mysql-compatibility/">AWS Database 공식 블로그</a>에서 AWS JDBC 사용 권장
   - <img src="/img/aws-database-blog.png" width="400px">
@@ -53,7 +60,7 @@ Spring 에서 JDBC 를 선택할 때 위 두가지 장점을 살릴 수 있는 �
 
 ~~~gradle
 dependencies {
-    implementation 'software.aws.rds:aws-mysql-jdbc:1.1.2'
+    implementation 'software.aws.rds:aws-mysql-jdbc:1.1.4'
 }
 ~~~
 - <a href="https://github.com/awslabs/aws-mysql-jdbc#as-a-gradle-dependency">https://github.com/awslabs/aws-mysql-jdbc#as-a-gradle-dependency</a>
