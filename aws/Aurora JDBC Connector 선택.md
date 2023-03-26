@@ -44,15 +44,16 @@ Spring 에서 JDBC 를 선택할 때 위 두가지 장점을 살릴 수 있는 �
 앞서 목표로 삼은 AWS Aurora 의 Read/Write 의 접속 분리, Failover 시 HA 구성 조건을 만족하는 Driver 는 MariaDB JDBC v2.x, AWS MySQL JDBC 2개 <br>
 ~~아래와 같은 이유로 **AWS MySQL JDBC** 사용~~ <br>
 
+- MariaDB JDBC 의 메이저 버전 업데이트에서 Aurora 지원 중단
+- <a href="https://aws.amazon.com/ko/blogs/database/using-the-mariadb-jdbc-driver-with-amazon-aurora-with-mysql-compatibility/">AWS Database 공식 블로그</a>에서 AWS JDBC 사용 권장
+  - <img src="/img/aws-database-blog.png" width="400px">
+- 수동 설정을 통해 Reader Instance 의 Scale Out 에 따라 Reader 쪽 Connection Pool 만 늘리도록 변경 가능
+  
 > 2023.03.15 수정
 
 수정날짜(2023.03.15) 기준 최신 버전 (1.1.4) 기준으로 확인했을 때 Read Cluster 에 Connection 만 맺어지고, <br>
 실제 쿼리는 Write Cluster 로 보내지는 것을 확인. <br>
 라이브러리 내에서 왜 connection url 이 변경 되는 것인지 확인 필요 <br>
-
-- MariaDB JDBC 의 메이저 버전 업데이트에서 Aurora 지원 중단
-- <a href="https://aws.amazon.com/ko/blogs/database/using-the-mariadb-jdbc-driver-with-amazon-aurora-with-mysql-compatibility/">AWS Database 공식 블로그</a>에서 AWS JDBC 사용 권장
-  - <img src="/img/aws-database-blog.png" width="400px">
   
 <h3>Spring 에서 Read/Write 분리 수동 설정 예시</h3>
 
@@ -76,14 +77,20 @@ mysql:
   password: {password}
   write:
     name: write
-    url: jdbc:mysql:aws://{Write Cluster Endpoint}
+    # url: jdbc:mysql:aws://{Write Cluster Endpoint}
+    url: jdbc:mysql://{Write Cluster Endpoint}
   read:
     name: read
-    url: jdbc:mysql:aws://{Read Cluster Endpoint}
+    # url: jdbc:mysql:aws://{Read Cluster Endpoint}
+    url: jdbc:mysql://{Read Cluster Endpoint}
 ~~~
 
 - write/read 의 url 분리
-- url 은 jdbc:mysql:aws:// 로 설정 (aws 빼먹을 경우 일반 MySQL JDBC 로 사용됨)
+- ~~url 은 jdbc:mysql:aws:// 로 설정 (aws 빼먹을 경우 일반 MySQL JDBC 로 사용됨)~~
+  - 라이브러리 현재 버전 (1.1.2 ~ 1.1.4 모두 해당) 에서 Reader 에 Connection 만 가지고 실제 쿼리는 Writer 로 전송
+  - aws-jdbc-mysql 은 mysql connector/j 를 기반으로 만든 것이라 build.gradle 의 의존성이나 driver-class-name 은 유지하고 jdbc-url 의 연결 방식만 변경
+  - Failover vs Reader/Writer 분리의 문제였으나, Failover 는 비교적 흔치 않은 상황이고 Reader Cluster 로 부하를 분산시키는게 DB 안전성으로 볼 때 더 중요하기에 mysql 커넥터로 결정
+    - https://github.com/awslabs/aws-mysql-jdbc 버전 업데이트 주기적으로 확인 필요
 - 반드시 Instance Endpoint 가 아닌 Cluster Endpoint 사용
 
 <br>
