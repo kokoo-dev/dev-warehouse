@@ -4,6 +4,7 @@
 Jenkins 설치 과정 및 Postman Json Export 과정은 생략합니다. <br>
 
 <h3>Test Version</h3>
+
 - OS: macOS Ventura
 - Jenkins: 2.387.1
 - Postman: 10.11.2
@@ -13,6 +14,7 @@ Jenkins 설치 과정 및 Postman Json Export 과정은 생략합니다. <br>
 <br><br>
 
 <h3>순서</h3>
+
 - <a href="#node-install-setting">Node.js Plugin 설치 및 설정</a>
 - <a href="#jenkins-item-setting">Jenkins item 설정</a>
 - <a href="#test-result">테스트 결과 확인</a>
@@ -25,7 +27,7 @@ Postman 에서 추출한 Json 파일을 커맨드에서 실행시키기 위해 �
 
 **Node.js Plugin 설치** <br>
 
-<img src="/img/nodejs_install_20230330.png" width="600px"> <br>
+<img src="/img/test/nodejs_install_20230330.png" width="600px"> <br>
 
 - Jenkins 관리 - Plugin Manager 이동
 - nodejs 를 검색하여 다운로드
@@ -34,7 +36,7 @@ Postman 에서 추출한 Json 파일을 커맨드에서 실행시키기 위해 �
 
 **Newman 설치를 위한 설정** <br>
 
-<img src="/img/nodejs_setting_20230330.png" width="600px"> <br>
+<img src="/img/test/nodejs_setting_20230330.png" width="600px"> <br>
 
 - Jenkins 관리 - Global Tool Configuration 이동
 - NodeJS installations 클릭
@@ -48,7 +50,7 @@ Postman 에서 추출한 Json 파일을 커맨드에서 실행시키기 위해 �
 
 **Node.js 지정** <br>
 
-<img src="/img/item_setting_build_env_20230330.png" width="600px"> <br>
+<img src="/img/test/item_setting_build_env_20230330.png" width="600px"> <br>
 
 - Global Tool Configuration 에서 설정한 Node.js 버전 지정
 
@@ -56,7 +58,7 @@ Postman 에서 추출한 Json 파일을 커맨드에서 실행시키기 위해 �
 
 **Newman 실행 명령** <br>
 
-<img src="/img/item_setting_build_steps_20230330.png" width="600px"> <br>
+<img src="/img/test/item_setting_build_steps_20230330.png" width="600px"> <br>
 
 - Add build step - Execute shell 선택
 - newman 실행 명령어 입력
@@ -81,7 +83,7 @@ newman run /Users/kojinha/Desktop/test-automation.json --reporters cli,json,juni
 
 XML 파일을 파싱하여 테스트 결과를 보여주도록 설정 <br>
 
-<img src="/img/item_setting_after_build_20230330.png" width="600px"> <br>
+<img src="/img/test/item_setting_after_build_20230330.png" width="600px"> <br>
 
 - Test report XMLs: 현재 jenkins workspace 기준 상대 경로의 파일 지정
 - Do not fail the build on empty test results: 테스트 결과가 없음에도 빌드에 영향을 주지 않음.
@@ -92,16 +94,16 @@ XML 파일을 파싱하여 테스트 결과를 보여주도록 설정 <br>
 
 **테스트 결과 Console** <br>
 
-<img src="/img/console_output.png" width="600px"> <br>
+<img src="/img/test/console_output_20230330.png" width="600px"> <br>
 
 **전체 테스트 결과 보고서** <br>
 
 Dashboard - item에서 전체 테스트 결과 확인 <br>
 
-<img src="/img/all_test_result_20230330.png" width="600px"> <br>
+<img src="/img/test/all_test_result_20230330.png" width="600px"> <br>
 
 **빌드 개별 테스트 결과 보고서** <br>
 
 Dashboard - item - 빌드 결과 - Test Results에서 개별 테스트 결과 확인 <br>
 
-<img src="/img/build_detail_test_result_20230330.png" width="600px"> <br>
+<img src="/img/test/build_detail_test_result_20230330.png" width="600px"> <br>
