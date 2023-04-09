@@ -79,6 +79,17 @@ newman run /Users/kojinha/Desktop/test-automation.json --reporters cli,json,juni
 
 <br>
 
+**실행 스케줄러** <br>
+
+<img src="/img/test/build_periodically_20230409.png" width="800px"> <br>
+
+배포 시에 테스트를 실행 시킬 수도 있지만, 주기적으로 테스트를 해야하는 경우 Build Periodically 를 이용하여 스케줄러를 설정할 수 있습니다. <br>
+
+- crontab
+  - 분 | 시간 | 일 | 월 | 요일 | 명령
+
+<br>
+
 **테스트 결과 출력** <br>
 
 XML 파일을 파싱하여 테스트 결과를 보여주도록 설정 <br>
