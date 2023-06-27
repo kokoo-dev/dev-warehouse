@@ -89,9 +89,11 @@ mysql:
 - ~~url 은 jdbc:mysql:aws:// 로 설정 (aws 빼먹을 경우 일반 MySQL JDBC 로 사용됨)~~
   - 라이브러리 현재 버전 (1.1.2 ~ 1.1.4 모두 해당) 에서 Reader 에 Connection 만 가지고 실제 쿼리는 Writer 로 전송
   - aws-jdbc-mysql 은 mysql connector/j 를 기반으로 만든 것이라 build.gradle 의 의존성이나 driver-class-name 은 유지하고 jdbc-url 의 연결 방식만 변경
-  - Failover vs Reader/Writer 분리의 문제였으나, Failover 는 비교적 흔치 않은 상황이고 Reader Cluster 로 부하를 분산시키는게 DB 안전성으로 볼 때 더 중요하기에 mysql 커넥터로 결정
-    - Failover 는 장애 알림으로 인지 후 @RefreshScope 로 수동 갱신
-    - https://github.com/awslabs/aws-mysql-jdbc 버전 업데이트 주기적으로 확인 필요
+  - Reader Cluster 로 부하 분산을 위한 mysql 커넥터로 결정, Failover는 아래와 같은 다른 방식으로 대체
+    - RDS Proxy 설정
+    - LazyConnectionDataSourceProxy Bean 설정 @RefreshScope 로 수동 갱신
+    - MaxLifeTime 짧게 설정
+    - https://github.com/awslabs/aws-mysql-jdbc 버전 업데이트 주기적으로 tracking 필요
 - 반드시 Instance Endpoint 가 아닌 Cluster Endpoint 사용
 
 <br>
