@@ -11,11 +11,16 @@ Redis Pub/Sub 은 topic 을 구독하고 있는 모든 Subscriber 가 메세지�
 
 ~~~gradle
 dependencies {
+    // redis
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    
+    // cache
+    implementation 'org.springframework.boot:spring-boot-starter-cache'
+	implementation 'org.ehcache:ehcache'
 }
 ~~~
 
-redis 사용을 위한 spring boot data redis 의존성을 추가
+spring boot data redis, ehcache 의존성을 추가
 <br><br>
 
 > ex) application.yml
@@ -90,16 +95,47 @@ public class RedisConfig {
 Redis 기본 연결 설정과 Subscriber 를 위한 Listener 설정
 <br><br>
 
+> ex) CacheConfig.java
+
+~~~java
+@Configuration
+@EnableCaching
+public class CacheConfig {
+
+    @Bean
+    public CacheManager cacheManager() {
+        return new ConcurrentMapCacheManager();
+    }
+}
+~~~
+
+<br>
+
+> ex) ehcache.xml
+
+~~~xml
+<ehcache>
+  <defaultCache
+    maxElementsInMemory="100"
+    eternal="true"
+    overflowToDisk="true"
+    maxElementsOnDisk="10000000"
+    memoryStoreEvictionPolicy="LRU"/>
+</ehcache>
+~~~
+
+로컬 캐시를 위한 기본 설정
+<br><br>
+
 > ex) PubSubMessage.java
 
 ~~~java
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class PubSubMessage implements Serializable {
+public class PubSubMessage {
 
-    private static final long serialVersionUID = 7886980891647899172L;
-
+    private String cacheName;
     private String cacheKey;
     private String content;
 }
@@ -127,6 +163,7 @@ public class RedisPublisher {
 ~~~
 
 RedisTemplate.convertAndSend()를 통해 지정된 topic으로 메세지 발행
+<br><br>
 
 > ex) RedisSubscriber.java
 
@@ -136,17 +173,35 @@ RedisTemplate.convertAndSend()를 통해 지정된 topic으로 메세지 발행
 public class RedisSubscriber implements MessageListener {
     
     private final ObjectMapper mapper;
+    private final CacheManager cacheManager;
 
     @Override
     public void onMessage(Message message, byte[] pattern) {
         try {
             PubSubMessage pubSubMessage = mapper.readValue(new String(message.getBody()), PubSubMessage.class);
-            // TODO 로컬 캐시 동기화 처리
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+            cacheManager.getCache(pubSubMessage.getCacheName()).put(pubSubMessage.getCacheKey(), pubSubMessage.getContent());
+        } catch (Exception e) {
+            
         }
     }
 }
 ~~~
 
-MessageListener를 상속받아 onMessage를 구현하여 발행된 메세지에 대한 추가 작업 처리
+MessageListener를 상속받아 onMessage를 구현하여 발행된 메세지로 로컬 캐시 동기화
+<br><br>
+
+> ex) CacheService.java
+
+~~~java
+@Service
+public class CacheService {
+
+    @Cacheable(value = "local", key = "#key")
+    public String get(String key) {
+
+        return "not cache";
+    }
+}
+~~~
+
+캐시가 갱신됐는지 확인
