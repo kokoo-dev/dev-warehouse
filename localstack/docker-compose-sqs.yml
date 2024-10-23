@@ -1,0 +1,16 @@
+version: '3.8'
+services:
+  aws:
+    image: 'localstack/localstack'
+    container_name: 'localstack'
+    environment:
+      - SERVICES=sqs
+      - DEFAULT_REGION=ap-northeast-2
+      - DEBUG=1
+      - DATA_DIR=/tmp/localstack/data
+      - AWS_ACCESS_KEY_ID=temp-key-id
+      - AWS_SECRET_ACCESS_KEY=temp-access-key
+      - AWS_DEFAULT_REGION=ap-northeast-2
+      - SQS_ENDPOINT_STRATEGY=path
+    ports:
+      - '4566:4566'
