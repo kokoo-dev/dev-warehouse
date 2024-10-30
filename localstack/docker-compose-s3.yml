@@ -1,0 +1,19 @@
+version: "3.8"
+
+services:
+  localstack:
+    image: localstack/localstack
+    container_name: localstack-s3
+    ports:
+      - "4566:4566"
+      - "4572:4572"
+    environment:
+      - SERVICES=s3
+      - AWS_ACCESS_KEY_ID=temp-key-id
+      - AWS_SECRET_ACCESS_KEY=temp-access-key
+      - DEFAULT_REGION=ap-northeast-2
+      - DATA_DIR=/tmp/localstack/data
+      - DEBUG=1
+    volumes:
+      - "./localstack/data:/var/lib/localstack"
+      -  "/var/run/docker.sock:/var/run/docker.sock"

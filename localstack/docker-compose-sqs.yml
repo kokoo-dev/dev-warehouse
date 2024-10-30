@@ -1,8 +1,8 @@
-version: '3.8'
+version: "3.8"
 services:
   aws:
-    image: 'localstack/localstack'
-    container_name: 'localstack'
+    image: "localstack/localstack"
+    container_name: "localstack-sqs"
     environment:
       - SERVICES=sqs
       - DEFAULT_REGION=ap-northeast-2
@@ -13,4 +13,4 @@ services:
       - AWS_DEFAULT_REGION=ap-northeast-2
       - SQS_ENDPOINT_STRATEGY=path
     ports:
-      - '4566:4566'
+      - "4566:4566"

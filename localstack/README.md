@@ -1,7 +1,5 @@
 ## References
 
----
-
 - github: https://github.com/localstack/localstack
 - docs: https://docs.localstack.cloud/overview/
   - configuration: https://docs.localstack.cloud/references/configuration/
@@ -10,8 +8,6 @@
 
 
 ## Example
-
----
 
 ### SQS
 
@@ -33,4 +29,29 @@ aws --endpoint-url http://localhost:4566 sqs send-message --queue-url http://loc
 
 # receive
 aws --endpoint-url http://localhost:4566 sqs receive-message --queue-url http://localhost.localstack.cloud:4566/queue/ap-northeast-2/000000000000/queue.fifo
+~~~
+
+### S3
+
+~~~sh
+# list bucket
+aws --endpoint-url http://localhost:4566 s3 ls
+
+# create bucket
+aws --endpoint-url http://localhost:4566 s3 mb s3://sample-bucket
+
+# delete bucket
+aws --endpoint-url http://localhost:4566 s3 rb s3://sample-bucket
+
+# list file
+aws --endpoint-url http://localhost:4566 s3 ls s3://sample-bucket
+
+# upload file
+aws --endpoint-url http://localhost:4566 s3 cp /local/path/upload.png s3://sample-bucket
+
+# download file
+aws --endpoint-url http://localhost:4566 s3 cp s3://sample-bucket/upload.png /local/path/download.png
+
+# delete file
+aws --endpoint-url http://localhost:4566 s3 rm s3://sample-bucket/upload.png
 ~~~
