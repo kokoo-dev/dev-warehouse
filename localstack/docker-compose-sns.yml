@@ -1,0 +1,15 @@
+version: "3.8"
+
+services:
+  localstack:
+    image: localstack/localstack
+    container_name: localstack-sns
+    ports:
+      - "4566:4566"
+    environment:
+      - SERVICES=sns
+      - AWS_ACCESS_KEY_ID=qwer
+      - AWS_SECRET_ACCESS_KEY=1234
+      - DEFAULT_REGION=ap-northeast-2
+      - DATA_DIR=/tmp/localstack/data
+      - DEBUG=1

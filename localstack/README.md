@@ -55,3 +55,25 @@ aws --endpoint-url http://localhost:4566 s3 cp s3://sample-bucket/upload.png /lo
 # delete file
 aws --endpoint-url http://localhost:4566 s3 rm s3://sample-bucket/upload.png
 ~~~
+
+### SNS
+
+~~~sh
+# list topic
+aws --endpoint-url http://localhost:4566 sns list-topics
+
+# create topic
+aws --endpoint-url http://localhost:4566 sns create-topic --name sample-topic
+
+# delete topic
+aws --endpoint-url http://localhost:4566 sns delete-topic --topic-arn arn:aws:sns:ap-northeast-2:000000000000:sample-topic
+
+# list subscription
+aws --endpoint-url http://localhost:4566 sns list-subscriptions
+
+# subscribe
+aws --endpoint-url http://localhost:4566 sns subscribe --topic-arn arn:aws:sns:ap-northeast-2:000000000000:sample-topic --protocol http --notification-endpoint http://localhost:8080/test
+
+# publish
+aws --endpoint-url http://localhost:4566 sns publish --topic-arn arn:aws:sns:ap-northeast-2:000000000000:sample-topic --subject 제목 --message 내용
+~~~
