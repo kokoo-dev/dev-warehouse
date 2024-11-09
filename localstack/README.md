@@ -77,3 +77,26 @@ aws --endpoint-url http://localhost:4566 sns subscribe --topic-arn arn:aws:sns:a
 # publish
 aws --endpoint-url http://localhost:4566 sns publish --topic-arn arn:aws:sns:ap-northeast-2:000000000000:sample-topic --subject 제목 --message 내용
 ~~~
+
+### SES
+
+~~~sh
+# verify email
+aws --endpoint-url http://localhost:4566 ses verify-email-identity --email-address from@example.com
+
+# send email
+aws --endpoint-url http://localhost:4566 ses send-email --from from@example.com --to to@example.com --cc cc@example.com --bcc bcc@example.com --subject subject --text text
+aws --endpoint-url http://localhost:4566 ses send-email --from from@example.com --to to@example.com --cc cc@example.com --bcc bcc@example.com --subject subject --html html
+
+# list template
+aws --endpoint-url http://localhost:4566 ses list-templates
+
+# create template
+aws --endpoint-url http://localhost:4566 ses create-template --template TemplateName=example,SubjectPart=subject,TextPart=text,HtmlPart=html
+
+# get template
+aws --endpoint-url http://localhost:4566 ses get-template --template-name example
+
+# send template email
+aws --endpoint-url http://localhost:4566 ses send-templated-email --source from@example.com --destination ToAddresses=to@example.com,CcAddresses=cc@example.com,BccAddresses=bcc@example.com --template example --template-data foo=bar
+~~~
